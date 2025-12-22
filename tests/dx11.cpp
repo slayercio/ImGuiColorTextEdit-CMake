@@ -20,6 +20,34 @@ void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+void DrawFPSOverlay()
+{
+    const float PAD = 10.0f;
+    const ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+    ImVec2 pos = ImVec2(
+        viewport->WorkPos.x + PAD,
+        viewport->WorkPos.y + PAD
+    );
+
+    ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.3f); // transparent bg
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoDecoration |
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoFocusOnAppearing |
+        ImGuiWindowFlags_NoNav;
+
+    if (ImGui::Begin("##fps_overlay", nullptr, flags))
+    {
+        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    }
+    ImGui::End();
+}
+
+
 int main(int, char**)
 {
     // Make process DPI aware and obtain main monitor scale
@@ -132,6 +160,8 @@ int main(int, char**)
 
             ImGui::End();
         }
+
+        DrawFPSOverlay();
 
         // Rendering
         ImGui::Render();
