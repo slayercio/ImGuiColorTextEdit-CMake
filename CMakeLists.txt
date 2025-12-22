@@ -13,4 +13,11 @@ target_include_directories(imgui_text_editor PUBLIC
 )
 
 include(cmake/fetch-imgui.cmake)
+include(cmake/fetch-re2.cmake)
 fetch_imgui(imgui_text_editor)
+fetch_re2(imgui_text_editor)
+
+option(BUILD_TESTS "Build the tests" ON)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

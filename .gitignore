@@ -36,3 +36,4 @@ Save/TextEditor.h
 Save/TextEditor.cpp
 
 build/
+imgui.ini
