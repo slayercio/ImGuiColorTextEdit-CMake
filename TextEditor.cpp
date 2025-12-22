@@ -63,7 +63,13 @@ void TextEditor::SetLanguageDefinition(const LanguageDefinition & aLanguageDef)
 	mRegexList.clear();
 
 	for (auto& r : mLanguageDefinition.mTokenRegexStrings)
-		mRegexList.push_back(std::make_pair(std::regex(r.first, std::regex_constants::optimize), r.second));
+	{
+		mRegexList.emplace_back(
+			std::piecewise_construct,
+			std::forward_as_tuple(r.first),
+			std::forward_as_tuple(r.second)
+		);
+	}
 
 	Colorize();
 }
@@ -2146,7 +2152,6 @@ void TextEditor::ColorizeRange(int aFromLine, int aToLine)
 		return;
 
 	std::string buffer;
-	std::cmatch results;
 	std::string id;
 
 	int endLine = std::max(0, std::min((int)mLines.size(), aToLine));
@@ -2168,9 +2173,7 @@ void TextEditor::ColorizeRange(int aFromLine, int aToLine)
 		const char * bufferBegin = &buffer.front();
 		const char * bufferEnd = bufferBegin + buffer.size();
 
-		auto last = bufferEnd;
-
-		for (auto first = bufferBegin; first != last; )
+		for (const char* first = bufferBegin; first < bufferEnd; )
 		{
 			const char * token_begin = nullptr;
 			const char * token_end = nullptr;
@@ -2180,28 +2183,46 @@ void TextEditor::ColorizeRange(int aFromLine, int aToLine)
 
 			if (mLanguageDefinition.mTokenize != nullptr)
 			{
-				if (mLanguageDefinition.mTokenize(first, last, token_begin, token_end, token_color))
+				if (mLanguageDefinition.mTokenize(first, bufferEnd, token_begin, token_end, token_color))
 					hasTokenizeResult = true;
 			}
 
 			if (hasTokenizeResult == false)
 			{
-				// todo : remove
-				//printf("using regex for %.*s\n", first + 10 < last ? 10 : int(last - first), first);
+				std::string_view input(first, bufferEnd - first);
 
 				for (auto& p : mRegexList)
 				{
-					if (std::regex_search(first, last, results, p.first, std::regex_constants::match_continuous))
+					re2::StringPiece match;
+
+					if (p.first.Match(input, 0, input.size(), RE2::ANCHOR_START, &match, 1))
 					{
 						hasTokenizeResult = true;
 
-						auto& v = *results.begin();
-						token_begin = v.first;
-						token_end = v.second;
+						auto token_begin_ptr = reinterpret_cast<std::uintptr_t>(first) + reinterpret_cast<std::uintptr_t>(match.data()) - reinterpret_cast<std::uintptr_t>(input.data());
+						token_begin = reinterpret_cast<const char*>(token_begin_ptr);
+						token_end = token_begin + match.size();
 						token_color = p.second;
 						break;
 					}
 				}
+
+				// todo : remove
+				//printf("using regex for %.*s\n", first + 10 < last ? 10 : int(last - first), first);
+
+				// for (auto& p : mRegexList)
+				// {
+				// 	if (std::regex_search(first, last, results, p.first, std::regex_constants::match_continuous))
+				// 	{
+				// 		hasTokenizeResult = true;
+
+				// 		auto& v = *results.begin();
+				// 		token_begin = v.first;
+				// 		token_end = v.second;
+				// 		token_color = p.second;
+				// 		break;
+				// 	}
+				// }
 			}
 
 			if (hasTokenizeResult == false)

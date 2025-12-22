@@ -8,7 +8,10 @@
 #include <unordered_map>
 #include <map>
 #include <regex>
+#include <deque>
 #include "imgui.h"
+
+#include <re2/re2.h>
 
 class TextEditor
 {
@@ -267,7 +270,7 @@ public:
 	static const Palette& GetRetroBluePalette();
 
 private:
-	typedef std::vector<std::pair<std::regex, PaletteIndex>> RegexList;
+	typedef std::deque<std::pair<RE2, PaletteIndex>> RegexList;
 
 	struct EditorState
 	{
