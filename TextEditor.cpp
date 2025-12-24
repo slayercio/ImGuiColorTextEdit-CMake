@@ -2189,6 +2189,8 @@ void TextEditor::ColorizeRange(int aFromLine, int aToLine)
 
 			if (hasTokenizeResult == false)
 			{
+				if (first >= bufferEnd)
+					break;
 				std::string_view input(first, bufferEnd - first);
 
 				for (auto& p : mRegexList)
