@@ -270,6 +270,9 @@ public:
 	static const Palette& GetRetroBluePalette();
 
 private:
+	// NOTE: RE2 objects are move-only (non-copyable). We intentionally use std::deque
+	// here instead of std::vector so that push/pop operations do not trigger bulk
+	// moves of existing RE2 instances on reallocation, which would be more expensive.
 	typedef std::deque<std::pair<RE2, PaletteIndex>> RegexList;
 
 	struct EditorState
