@@ -2208,23 +2208,6 @@ void TextEditor::ColorizeRange(int aFromLine, int aToLine)
 						break;
 					}
 				}
-
-				// todo : remove
-				//printf("using regex for %.*s\n", first + 10 < last ? 10 : int(last - first), first);
-
-				// for (auto& p : mRegexList)
-				// {
-				// 	if (std::regex_search(first, last, results, p.first, std::regex_constants::match_continuous))
-				// 	{
-				// 		hasTokenizeResult = true;
-
-				// 		auto& v = *results.begin();
-				// 		token_begin = v.first;
-				// 		token_end = v.second;
-				// 		token_color = p.second;
-				// 		break;
-				// 	}
-				// }
 			}
 
 			if (hasTokenizeResult == false)
