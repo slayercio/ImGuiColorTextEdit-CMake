@@ -8,7 +8,10 @@
 #include <unordered_map>
 #include <map>
 #include <regex>
+#include <deque>
 #include "imgui.h"
+
+#include <re2/re2.h>
 
 class TextEditor
 {
@@ -267,7 +270,10 @@ public:
 	static const Palette& GetRetroBluePalette();
 
 private:
-	typedef std::vector<std::pair<std::regex, PaletteIndex>> RegexList;
+	// NOTE: RE2 objects are move-only (non-copyable). We intentionally use std::deque
+	// here instead of std::vector so that push/pop operations do not trigger bulk
+	// moves of existing RE2 instances on reallocation, which would be more expensive.
+	typedef std::deque<std::pair<RE2, PaletteIndex>> RegexList;
 
 	struct EditorState
 	{
