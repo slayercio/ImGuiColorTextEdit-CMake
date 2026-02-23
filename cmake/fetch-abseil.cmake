@@ -1,6 +1,8 @@
 include(FetchContent)
 
 function(fetch_absl target)
+    set(ABSL_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
     FetchContent_Declare(
         absl
         GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git

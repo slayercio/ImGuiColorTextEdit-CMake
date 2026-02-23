@@ -1,2 +1,2 @@
 add_executable(dx11_example dx11.cpp)
-target_link_libraries(dx11_example imgui_text_editor)
+target_link_libraries(dx11_example imgui_text_editor d3d11)

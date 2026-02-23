@@ -12,6 +12,9 @@ target_include_directories(imgui_text_editor PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+set(IMGUI_BACKEND_WIN32 ON CACHE BOOL "Enable Win32 backend for ImGui")
+set(IMGUI_BACKEND_DX11 ON CACHE BOOL "Enable DX11 backend for ImGui")
+
 include(cmake/fetch-imgui.cmake)
 include(cmake/fetch-re2.cmake)
 fetch_imgui(imgui_text_editor)

@@ -9,8 +9,8 @@
 #include <map>
 #include <regex>
 #include <deque>
-#include "imgui.h"
 
+#include <imgui/imgui.h>
 #include <re2/re2.h>
 
 class TextEditor
@@ -183,6 +183,7 @@ public:
 		static const LanguageDefinition& SQL();
 		static const LanguageDefinition& AngelScript();
 		static const LanguageDefinition& Lua();
+		static const LanguageDefinition& FiveMLua();
 	};
 
 	TextEditor();
